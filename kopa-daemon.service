@@ -1,0 +1,12 @@
+[Unit]
+Description=Kopa Clipboard Manager Daemon
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/kopa-daemon
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

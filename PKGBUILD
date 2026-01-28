@@ -2,7 +2,7 @@
 
 pkgname=kopa
 pkgver=0.2.0
-pkgrel=1
+pkgrel=2
 pkgdesc="TUI clipboard manager for Wayland"
 arch=('x86_64')
 url="https://github.com/eyenalxai/kopa"
@@ -10,8 +10,10 @@ license=('GPL3')
 depends=('gcc-libs' 'sqlite' 'wayland')
 makedepends=('cargo' 'bun')
 options=('!debug' '!strip')
-source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
-sha256sums=('b3770cd14e55bd8d75847e35afbb79ecedc6de60368bd18108058a4bd93342a7')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz"
+  "kopa-daemon.service")
+sha256sums=('b3770cd14e55bd8d75847e35afbb79ecedc6de60368bd18108058a4bd93342a7'
+            'd160090f5e87b0dc19d7034264ea43638b0d1fbf54cddb96d9134cee7199df8b')
 
 prepare() {
   cd "$pkgname-$pkgver"
@@ -36,5 +38,6 @@ package() {
   install -Dm0755 -t "$pkgdir/usr/bin/" "dist/kopa"
   install -Dm0755 -t "$pkgdir/usr/bin/" "target/release/kopa-daemon"
   strip --strip-unneeded "$pkgdir/usr/bin/kopa-daemon"
+  install -Dm0644 -t "$pkgdir/usr/lib/systemd/user/" "$srcdir/kopa-daemon.service"
   install -Dm0644 -t "$pkgdir/usr/share/licenses/$pkgname/" LICENSE
 }
