@@ -1,12 +1,14 @@
 [Unit]
 Description=Kopa Clipboard Manager Daemon
 After=graphical-session.target
+Wants=graphical-session.target
 
 [Service]
 Type=simple
 ExecStart=/usr/bin/kopa-daemon
 Restart=on-failure
 RestartSec=5
+PassEnvironment=WAYLAND_DISPLAY XDG_RUNTIME_DIR
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical-session.target

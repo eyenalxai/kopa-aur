@@ -2,7 +2,7 @@
 
 pkgname=kopa
 pkgver=0.2.3
-pkgrel=1
+pkgrel=2
 pkgdesc="TUI clipboard manager for Wayland"
 arch=('x86_64')
 url="https://github.com/eyenalxai/kopa"
@@ -13,7 +13,7 @@ options=('!debug' '!strip')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz"
   "kopa-daemon.service")
 sha256sums=('7f8e00eb7923b67068145b18cf2eb50423f11643bd7f4c0a557df53921b66595'
-            'd160090f5e87b0dc19d7034264ea43638b0d1fbf54cddb96d9134cee7199df8b')
+            '3e7163538f75e338df8126023d526e39814efba814ad32be3b588a552000267c')
 
 prepare() {
   cd "$pkgname-$pkgver"
