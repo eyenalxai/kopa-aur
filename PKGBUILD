@@ -1,43 +1,52 @@
 # Maintainer: roehistat <mail at iyxeyl.me>
 
 pkgname=kopa
-pkgver=0.2.3
-pkgrel=2
+pkgver=0.3.5
+pkgrel=1
 pkgdesc="TUI clipboard manager for Wayland"
 arch=('x86_64')
 url="https://github.com/eyenalxai/kopa"
 license=('GPL3')
 depends=('gcc-libs' 'sqlite' 'wayland')
-makedepends=('cargo' 'bun')
+makedepends=('bun')
 options=('!debug' '!strip')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz"
   "kopa-daemon.service")
-sha256sums=('7f8e00eb7923b67068145b18cf2eb50423f11643bd7f4c0a557df53921b66595'
-            '3e7163538f75e338df8126023d526e39814efba814ad32be3b588a552000267c')
+sha256sums=('1e5ee58792b0eb3a1de500249024e69bd5b1558473df454754a6647be682045f'
+            '09c4f9c6ff8efc5a79469bfec4de070063bfafc4179ef1b95ac17edf718aa1f2')
 
 prepare() {
   cd "$pkgname-$pkgver"
-  export RUSTUP_TOOLCHAIN=stable
-
-  cargo fetch --locked --target host-tuple --manifest-path kopa-daemon/Cargo.toml
   bun install --frozen-lockfile --production
 }
 
 build() {
   cd "$pkgname-$pkgver"
-  export RUSTUP_TOOLCHAIN=stable
-  export CARGO_TARGET_DIR=target
-
-  cargo build --frozen --release --manifest-path kopa-daemon/Cargo.toml
-  bun build --compile --target=bun-linux-x64-modern ./tui/index.tsx --outfile ./dist/kopa
+  bun build --compile --target=bun-linux-x64-modern ./src/main.ts --outfile ./dist/kopa
 }
 
 package() {
   cd "$pkgname-$pkgver"
 
+  # Install the compiled binary
   install -Dm0755 -t "$pkgdir/usr/bin/" "dist/kopa"
-  install -Dm0755 -t "$pkgdir/usr/bin/" "target/release/kopa-daemon"
-  strip --strip-unneeded "$pkgdir/usr/bin/kopa-daemon"
+
+  # Copy sharp's native modules (required for bun compile bug workaround)
+  # See: https://github.com/oven-sh/bun/issues/15374
+  install -d "$pkgdir/usr/lib/kopa/node_modules/@img"
+  cp -r "node_modules/@img/sharp-libvips-linux-x64" "$pkgdir/usr/lib/kopa/node_modules/@img/"
+  cp -r "node_modules/@img/sharp-linux-x64" "$pkgdir/usr/lib/kopa/node_modules/@img/"
+
+  # Copy sharp dependencies
+  cp -r "node_modules/@img/colour" "$pkgdir/usr/lib/kopa/node_modules/@img/"
+
+  # Copy sharp package itself
+  cp -r "node_modules/sharp" "$pkgdir/usr/lib/kopa/node_modules/"
+
+  # Copy sharp's JS dependencies
+  cp -r "node_modules/detect-libc" "$pkgdir/usr/lib/kopa/node_modules/"
+  cp -r "node_modules/semver" "$pkgdir/usr/lib/kopa/node_modules/"
+
   install -Dm0644 -t "$pkgdir/usr/lib/systemd/user/" "$srcdir/kopa-daemon.service"
   install -Dm0644 -t "$pkgdir/usr/share/licenses/$pkgname/" LICENSE
 }

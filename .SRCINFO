@@ -1,20 +1,19 @@
 pkgbase = kopa
 	pkgdesc = TUI clipboard manager for Wayland
-	pkgver = 0.2.3
-	pkgrel = 2
+	pkgver = 0.3.5
+	pkgrel = 1
 	url = https://github.com/eyenalxai/kopa
 	arch = x86_64
 	license = GPL3
-	makedepends = cargo
 	makedepends = bun
 	depends = gcc-libs
 	depends = sqlite
 	depends = wayland
 	options = !debug
 	options = !strip
-	source = kopa-0.2.3.tar.gz::https://github.com/eyenalxai/kopa/archive/v0.2.3.tar.gz
+	source = kopa-0.3.5.tar.gz::https://github.com/eyenalxai/kopa/archive/v0.3.5.tar.gz
 	source = kopa-daemon.service
-	sha256sums = 7f8e00eb7923b67068145b18cf2eb50423f11643bd7f4c0a557df53921b66595
-	sha256sums = 3e7163538f75e338df8126023d526e39814efba814ad32be3b588a552000267c
+	sha256sums = 1e5ee58792b0eb3a1de500249024e69bd5b1558473df454754a6647be682045f
+	sha256sums = 09c4f9c6ff8efc5a79469bfec4de070063bfafc4179ef1b95ac17edf718aa1f2
 
 pkgname = kopa
