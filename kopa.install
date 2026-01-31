@@ -1,0 +1,17 @@
+post_upgrade() {
+  echo "Checking for active Wayland sessions to restart kopa-daemon..."
+
+  loginctl list-sessions --no-legend | while read -r session_id uid user seat leader class type status since rest; do
+    session_type=$(loginctl show-session "$session_id" --property=Type --value 2>/dev/null)
+
+    if [ "$session_type" = "wayland" ]; then
+      echo "Restarting kopa-daemon for user $user (UID: $uid)..."
+      systemctl --machine "$uid@.host" --user try-restart kopa-daemon.service 2>/dev/null || true
+    fi
+  done
+}
+
+post_remove() {
+  echo "kopa has been removed. If kopa-daemon was running, you may need to stop it manually:"
+  echo "  systemctl --user stop kopa-daemon.service"
+}
